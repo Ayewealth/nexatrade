@@ -1,6 +1,8 @@
 "use client";
 
 import AreaChart from "@/components/reusable/charts/area";
+import CryptoCurrencyMarket from "@/components/reusable/trading-view/CryptoCurrencyMarket";
+import MarketOverviewWidget from "@/components/reusable/trading-view/MarketOverview";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import Image from "next/image";
@@ -182,6 +184,15 @@ const Page = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="flex lg:flex-nowrap flex-wrap gap-2 mb-2">
+        <div className="lg:w-[50%] w-full">
+          <CryptoCurrencyMarket />
+        </div>
+        <div className="lg:w-[50%] w-full">
+          <MarketOverviewWidget/>
         </div>
       </div>
     </div>
