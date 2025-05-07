@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Gorditas } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/global/theme";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
 });
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const gorditas = Gorditas({
   subsets: ["latin"],
+  weight: ["400", "700"], // Gorditas is only available in Regular (400) and Bold (700)
+  variable: "--font-gorditas",
 });
 
 export const metadata: Metadata = {
@@ -23,11 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${gorditas.variable} font-[Poppins] antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
