@@ -105,7 +105,7 @@ const Highlights = () => {
   ];
 
   // Function to create iframe HTML for single quote widget
-  const createSingleQuoteWidget = (symbol) => {
+  const createSingleQuoteWidget = (symbol: string) => {
     return {
       __html: `
         <iframe 
