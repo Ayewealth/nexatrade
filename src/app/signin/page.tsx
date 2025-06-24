@@ -1,20 +1,27 @@
 "use client";
 
 import { Nav } from "@/components/global/navbar";
+import CustomButton from "@/components/reusable/button";
+import InputGenerator from "@/components/reusable/input-generator";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff } from "lucide-react";
+import { SIGNIN_FORMS } from "@/constants/input";
+import { useAuthSignIn } from "@/hooks/auth";
+import { useAppSelector } from "@/lib/redux/store";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 const Page = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { errors, onAuthenticateUser, isPending, register } = useAuthSignIn();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated === true) router.replace("/auth-callback");
+  }, [isAuthenticated, router]);
 
   return (
     <>
@@ -29,69 +36,38 @@ const Page = () => {
             </div>
             <form>
               <div className="flex flex-col">
-                <div className="flex flex-col mb-4">
-                  <Label
-                    htmlFor="email"
-                    className="inline-block text-[13px] sm:text-sm pb-[4px]"
-                  >
-                    Email Address
-                    <span className="text-[#4b5563]">*</span>
-                  </Label>
-                  <Input
-                    type="email"
-                    id="email"
-                    placeholder="Email"
-                    className="bg-input border-0 placeholder:text-[13px] sm:placeholder:text-sm"
+                {SIGNIN_FORMS.map((field) => (
+                  <InputGenerator
+                    {...field}
+                    key={field.id}
+                    register={register}
+                    errors={errors}
+                    passText
                   />
-                </div>
-                <div className="flex flex-col mb-4">
-                  <Label
-                    htmlFor="password"
-                    className="inline-flex justify-between text-[13px] sm:text-sm pb-[4px]"
-                  >
-                    <p className="space-x-0.5">
-                      Password
-                      <span className="text-[#4b5563]">*</span>
-                    </p>
-                    <Link
-                      href={"/forget-password"}
-                      className="gd-text1 text-xs font-medium"
+                ))}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="terms" />
+                    <Label
+                      htmlFor="terms"
+                      className="text-xs sm:text-sm inline-block font-normal"
                     >
-                      Forgot Password?
-                    </Link>
-                  </Label>
-                  <div className="w-full relative items-center">
-                    <Input
-                      type={showPassword === true ? "text" : "password"}
-                      id="password"
-                      placeholder="Password"
-                      className="bg-input border-0 pr-14 placeholder:text-[13px] sm:placeholder:text-sm"
-                    />
-                    {showPassword === true ? (
-                      <EyeOff
-                        className="absolute top-2 right-4 h-[18px] w-[18px] cursor-pointer"
-                        onClick={togglePasswordVisibility}
-                      />
-                    ) : (
-                      <Eye
-                        className="absolute top-2 right-4 h-[18px] w-[18px] cursor-pointer"
-                        onClick={togglePasswordVisibility}
-                      />
-                    )}
+                      Remember me
+                    </Label>
                   </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="terms" />
-                  <Label
-                    htmlFor="terms"
-                    className="text-xs sm:text-sm inline-block font-normal"
+                  <Link
+                    href={"/forget-password"}
+                    className="gd-text1 font-bold text-xs sm:text-sm"
                   >
-                    Remember me
-                  </Label>
+                    Forgot password?
+                  </Link>
                 </div>
-                <Button className="bg-gradient-to-r from-[#fccd4d] to-[#f8b500] hover:from-[#f8b500] hover:to-[#fccd4d] text-black font-medium py-2 md:py-3 px-4 md:px-6 shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-0.5 active:translate-y-0.5 cursor-pointer text-sm md:text-sm rounded-4xl mt-6">
-                  Continue
-                </Button>
+                <CustomButton
+                  text="Log in"
+                  loading={isPending}
+                  className="w-full bg-gradient-to-r from-[#fccd4d] to-[#f8b500] hover:from-[#f8b500] hover:to-[#fccd4d] rounded-4xl mt-6"
+                  onClick={onAuthenticateUser}
+                />
               </div>
             </form>
             <div className="flex gap-2 mt-4 justify-center">

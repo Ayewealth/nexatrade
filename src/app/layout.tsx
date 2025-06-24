@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Poppins, Gorditas } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/global/theme";
+import { Toaster } from "@/components/ui/sonner";
+import { ReduxProvider } from "@/lib/redux/provider";
+import { ReactQueryProvider } from "@/lib/react-query/provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,18 +28,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${poppins.variable} ${gorditas.variable} font-[Poppins] antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ReduxProvider>
+          <ReactQueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </ReactQueryProvider>
+        </ReduxProvider>
+        <Toaster />
       </body>
     </html>
   );
