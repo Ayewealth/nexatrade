@@ -22,7 +22,7 @@ export default function TransactionTabs({
 
   return (
     <Tabs defaultValue="all" className="w-full">
-      <TabsList className="grid w-full md:grid-cols-4 grid-cols-2 w-full h-fit">
+      <TabsList className="grid w-full md:grid-cols-4 grid-cols-2 h-fit">
         <TabsTrigger value="all">All ({transactions.length})</TabsTrigger>
         <TabsTrigger value="deposits">Deposits ({deposits.length})</TabsTrigger>
         <TabsTrigger value="withdrawals">

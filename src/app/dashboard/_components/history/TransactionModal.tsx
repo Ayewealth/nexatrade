@@ -56,7 +56,7 @@ export default function TransactionDetailsModal({
           <div className="space-y-2">
             <Label className="text-sm font-medium">Type</Label>
             <div className="flex items-center gap-2">
-              {getTransactionIcon(transaction.transaction_type!)}
+              {getTransactionIcon(transaction.transaction_type ?? "")}
               <span className="capitalize text-sm">
                 {transaction.transaction_type}
               </span>
@@ -73,7 +73,7 @@ export default function TransactionDetailsModal({
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Status</Label>
-            {getStatusBadge(transaction.status!)}
+            {getStatusBadge(transaction.status ?? "")}
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Wallet</Label>

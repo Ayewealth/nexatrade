@@ -65,7 +65,7 @@ const Kyc = () => {
 
   // Load existing documents when component mounts
   useEffect(() => {
-    if (existingDocuments) {
+    if (existingDocuments && Array.isArray(existingDocuments)) {
       setKycDocuments((prev) =>
         prev.map((doc) => {
           const existingDoc = existingDocuments.find(

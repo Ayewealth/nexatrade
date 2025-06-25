@@ -58,7 +58,7 @@ export default function TransactionTable({
                   {showType && (
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {getTransactionIcon(transaction.transaction_type)}
+                        {getTransactionIcon(transaction.transaction_type ?? "")}
                         <span className="capitalize">
                           {transaction.transaction_type}
                         </span>
@@ -71,7 +71,7 @@ export default function TransactionTable({
                       transaction.crypto_wallet || transaction.usd_wallet
                     )}
                   </TableCell>
-                  <TableCell>{getStatusBadge(transaction.status)}</TableCell>
+                  <TableCell>{getStatusBadge(transaction.status ?? "")}</TableCell>
                   <TableCell>
                     <span className="text-sm">
                       {transaction.crypto_wallet ||
