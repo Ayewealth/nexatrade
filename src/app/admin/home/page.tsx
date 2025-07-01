@@ -22,24 +22,23 @@ const Page = () => {
     queryFn: getTransactionHistory,
   });
 
-  const { data: tradeData, isLoading: tradesLoading } = useQuery({
+  const { data: tradeData } = useQuery({
     queryKey: ["trades"],
     queryFn: getTrades,
     refetchInterval: 5000,
   });
 
-  const { data: kycs, isLoading: kycsLoading } = useQuery({
+  const { data: kycs } = useQuery({
     queryKey: ["allKycs"],
     queryFn: getAllKyc,
     refetchInterval: 5000,
   });
 
-  const { data: adminActionsData, isLoading: adminActionsDataLoading } =
-    useQuery({
-      queryKey: ["allAdminActions"],
-      queryFn: getAdminActions,
-      refetchInterval: 5000,
-    });
+  const { data: adminActionsData } = useQuery({
+    queryKey: ["allAdminActions"],
+    queryFn: getAdminActions,
+    refetchInterval: 5000,
+  });
 
   useEffect(() => {
     if (data) {
@@ -60,7 +59,7 @@ const Page = () => {
     }
   }, [data, tradeData, kycs, adminActionsData, dispatch]);
 
-  if (isLoading || tradesLoading || kycsLoading || adminActionsDataLoading) {
+  if (isLoading) {
     return (
       <div className="p-6 space-y-6">
         <div className="animate-pulse">
