@@ -6,6 +6,8 @@ import authSlice from "./slice/authSlice";
 import kycSlice from "./slice/kycSlice";
 import transactionHistorySlice from "./slice/transactionSlice";
 import walletSlice from "./slice/walletSlice";
+import tradingSlice from "./slice/tradingSlice";
+import investmentSlice from "./slice/investmentSlice";
 import {
   FLUSH,
   REHYDRATE,
@@ -26,6 +28,8 @@ const rootReducer = combineReducers({
   kyc: kycSlice,
   transactionHistory: transactionHistorySlice,
   wallet: walletSlice,
+  trading: tradingSlice,
+  investment: investmentSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

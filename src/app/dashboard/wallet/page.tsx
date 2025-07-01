@@ -389,7 +389,7 @@ const Page = () => {
                       <div className="text-2xl font-bold">
                         {showBalances
                           ? formatCurrency(
-                              Number.parseFloat(primaryUSDWallet.balance)
+                              Number.parseFloat(primaryUSDWallet?.balance)
                             )
                           : "••••••"}
                       </div>
@@ -601,7 +601,7 @@ const Page = () => {
                   <div className="text-2xl font-bold">
                     {showBalances
                       ? formatCurrency(
-                          Number.parseFloat(primaryUSDWallet.balance)
+                          Number.parseFloat(primaryUSDWallet?.balance)
                         )
                       : "••••••"}
                   </div>
@@ -619,7 +619,9 @@ const Page = () => {
                 <div>
                   <p className="text-muted-foreground">Created</p>
                   <p className="font-medium">
-                    {new Date(primaryUSDWallet.created_at).toLocaleDateString()}
+                    {new Date(
+                      primaryUSDWallet?.created_at
+                    ).toLocaleDateString()}
                   </p>
                 </div>
               </div>

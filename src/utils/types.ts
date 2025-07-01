@@ -155,3 +155,90 @@ export interface CreateDepositTransactionResponse {
   updated_at: string;
   note: string | null;
 }
+
+export interface Market {
+  id: number;
+  name: string;
+  base_currency: {
+    id: number;
+    name: string;
+    symbol: string;
+    logo_url: string;
+    is_active: true;
+  };
+  quote_currency: string;
+  is_active: boolean;
+  current_price: string;
+  min_trade_amount: string;
+  price_change_24h: 0.55;
+  volume_24h: string;
+  high_24h: string;
+  low_24h: string;
+}
+
+export interface Trade {
+  id: number;
+  user: number;
+  market: {
+    id: number;
+    name: string;
+    base_currency: {
+      name: string;
+      symbol: string;
+      logo_url: string;
+      is_active: boolean;
+    };
+    quote_currency: string;
+    is_active: boolean;
+    current_price: string;
+    min_trade_amount: string;
+  };
+  trade_type: string;
+  amount: string;
+  price: string;
+  leverage: number;
+  take_profit: string | null;
+  stop_loss: string | null;
+  status: string;
+  profit_calculation_mode: string;
+  manual_profit: string | null;
+  current_profit: string;
+  created_at: string;
+  closed_at: string | null;
+}
+
+export interface Package {
+  id: number;
+  name: string;
+  description: string;
+  min_investment: string;
+  max_investment: string;
+  duration_days: string;
+  profit_percentage: string;
+  is_active: boolean;
+  risk_level: string;
+  features: [];
+  max_trades_per_day: number;
+  trade_frequency_hours: number;
+  preferred_markets: [];
+}
+
+export interface AutoTrade {
+  id: number;
+  trade: Trade;
+  created_at: string;
+}
+
+export interface Subscription {
+  id: number;
+  package: Package;
+  investment_amount: string;
+  expected_profit: string;
+  total_profit_earned: string;
+  profit_progress_percentage: number;
+  status: string;
+  is_auto_trading_active: boolean;
+  start_date: string;
+  end_date: string;
+  auto_trades: AutoTrade[];
+}

@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { SignUpSchema } from "@/app/signup/schema";
 import {
   changePassword,
+  closeTrade,
   convertCryptoToUSD,
   convertUSDToCrypto,
   createDepositTransaction,
@@ -18,9 +19,11 @@ import {
   getTransactionHistory,
   kyc,
   loginUser,
+  placeTrade,
   registerUser,
   resetPassword,
   resetPasswordConfirm,
+  subscribePackage,
   updateProfile,
 } from "@/actions/auth";
 import {
@@ -404,6 +407,67 @@ export function useConvertUSDToCrypto() {
       queryClient.invalidateQueries({ queryKey: ["usdWallet"] });
       queryClient.invalidateQueries({ queryKey: ["walletUSDValues"] });
       queryClient.invalidateQueries({ queryKey: ["portfolioSummary"] });
+    },
+  });
+}
+
+export function usePlaceTrade() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      market,
+      trade_type,
+      amount,
+      leverage,
+      take_profit,
+      stop_loss,
+    }: {
+      market: number;
+      trade_type: string;
+      amount: string;
+      leverage: number;
+      take_profit: number;
+      stop_loss: number;
+    }) =>
+      placeTrade({
+        market,
+        trade_type,
+        amount,
+        leverage,
+        take_profit,
+        stop_loss,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+    },
+  });
+}
+
+export function useCloseTrade() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (tradeId: number) => closeTrade(tradeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+    },
+  });
+}
+
+export function useSubscribe() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      package_id,
+      investment_amount,
+    }: {
+      package_id: number;
+      investment_amount: string;
+    }) => subscribePackage({ package_id, investment_amount }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
     },
   });
 }

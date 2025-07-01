@@ -8,7 +8,11 @@ import Layout from "./_components/layout/client-layout-provider";
 import { getUserProfile } from "@/utils/queries";
 import {
   getKycStatus,
+  getMarkets,
+  getPackages,
   getPortfolioSummary,
+  getSubscriptions,
+  getTrades,
   getTransactionHistory,
   getUSDWallet,
   getWallets,
@@ -56,6 +60,26 @@ const layout = async ({ children }: Props) => {
   await query.prefetchQuery({
     queryKey: ["portfolioSummary"],
     queryFn: getPortfolioSummary,
+  });
+
+  await query.prefetchQuery({
+    queryKey: ["markets"],
+    queryFn: getMarkets,
+  });
+
+  await query.prefetchQuery({
+    queryKey: ["trades"],
+    queryFn: getTrades,
+  });
+
+  await query.prefetchQuery({
+    queryKey: ["packages"],
+    queryFn: getPackages,
+  });
+
+  await query.prefetchQuery({
+    queryKey: ["subscriptions"],
+    queryFn: getSubscriptions,
   });
 
   return (

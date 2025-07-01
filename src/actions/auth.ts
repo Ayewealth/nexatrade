@@ -11,6 +11,10 @@ import {
   WalletInterface,
   WalletUSDValue,
   RegisterSuccessResponse,
+  Market,
+  Trade,
+  Package,
+  Subscription,
 } from "@/utils/types";
 
 type RegisterResponse = RegisterSuccessResponse;
@@ -211,6 +215,81 @@ export const createWithdrawalTransaction = async (
     crypto_wallet,
     amount,
     external_address,
+  });
+
+  return data;
+};
+
+export const getMarkets = async (): Promise<Market[]> => {
+  const { data } = await api.get("/trading/markets/");
+
+  return data;
+};
+
+export const getTrades = async (): Promise<Trade[]> => {
+  const { data } = await api.get("/trading/trades/");
+
+  return data;
+};
+
+type placeTradeProps = {
+  market: number;
+  trade_type: string;
+  amount: string;
+  leverage: number;
+  take_profit: number;
+  stop_loss: number;
+};
+
+export const placeTrade = async ({
+  market,
+  trade_type,
+  amount,
+  leverage,
+  take_profit,
+  stop_loss,
+}: placeTradeProps): Promise<Trade> => {
+  const { data } = await api.post("/trading/trades/", {
+    market,
+    trade_type,
+    amount,
+    leverage,
+    take_profit,
+    stop_loss,
+  });
+
+  return data;
+};
+
+export const closeTrade = async (trade_id: number): Promise<Trade> => {
+  const { data } = await api.post(`/trading/trades/${trade_id}/close/`);
+
+  return data;
+};
+
+export const getPackages = async (): Promise<Package[]> => {
+  const { data } = await api.get("/auto_trades/packages/");
+
+  return data;
+};
+
+export const getSubscriptions = async (): Promise<Subscription[]> => {
+  const { data } = await api.get("/auto_trades/subscriptions/");
+
+  return data;
+};
+
+type subscribePackageProps = {
+  package_id: number;
+  investment_amount: string;
+};
+export const subscribePackage = async ({
+  package_id,
+  investment_amount,
+}: subscribePackageProps): Promise<Subscription> => {
+  const { data } = await api.post("/auto_trades/subscriptions/subscribe/", {
+    package: package_id,
+    investment_amount,
   });
 
   return data;

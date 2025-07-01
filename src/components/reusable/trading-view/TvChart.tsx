@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
 declare global {
@@ -38,6 +39,7 @@ interface TradingViewChartProps {
   enable_publishing?: boolean;
   hide_side_toolbar?: boolean;
   allow_symbol_change?: boolean;
+  className?: string;
 }
 
 const TradingViewChart: React.FC<TradingViewChartProps> = ({
@@ -53,6 +55,7 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({
   enable_publishing = false,
   hide_side_toolbar = false,
   allow_symbol_change = true,
+  className,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -99,7 +102,10 @@ const TradingViewChart: React.FC<TradingViewChartProps> = ({
   ]);
 
   return (
-    <div className="tradingview-chart-container" style={{ height }}>
+    <div
+      className={cn("tradingview-chart-container", className)}
+      style={{ height }}
+    >
       <div
         id="tradingview-chart"
         ref={containerRef}
