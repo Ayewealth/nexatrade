@@ -496,6 +496,7 @@ export function useAdminDepositApprove() {
       action: "approve" | "reject";
     }) => adminDepositApprove({ transaction, note, action }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactionHistory"] });
       queryClient.invalidateQueries({ queryKey: ["trades"] });
       queryClient.invalidateQueries({ queryKey: ["allKycs"] });
       queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
@@ -520,6 +521,7 @@ export function useAdminWithdrawalAction() {
     }) =>
       adminWithdrawalAction({ transaction, note, withdrawalTxHash, action }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactionHistory"] });
       queryClient.invalidateQueries({ queryKey: ["trades"] });
       queryClient.invalidateQueries({ queryKey: ["allKycs"] });
       queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
@@ -541,6 +543,7 @@ export function useAdminKYCAction() {
       action: "approve" | "reject";
     }) => adminKYCAction({ user, note, action }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactionHistory"] });
       queryClient.invalidateQueries({ queryKey: ["trades"] });
       queryClient.invalidateQueries({ queryKey: ["allKycs"] });
       queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
@@ -562,6 +565,7 @@ export function useAdminTradeAction() {
       note: string;
     }) => adminTradeAction({ trade, manual_profit, note }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactionHistory"] });
       queryClient.invalidateQueries({ queryKey: ["trades"] });
       queryClient.invalidateQueries({ queryKey: ["allKycs"] });
       queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
