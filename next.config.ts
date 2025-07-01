@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**", // 👈 match all image paths
       },
+      {
+        protocol: "http",
+        hostname: "nexatrade-backend.onrender.com",
+        port: "",
+        pathname: "/media/**",
+      },
     ],
   },
 };

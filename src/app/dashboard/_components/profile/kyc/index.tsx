@@ -367,12 +367,12 @@ const Kyc = () => {
                     </Button>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 md:flex-row flex-col">
                     {selectedDocument.status === "pending" && (
                       <CustomButton
                         text={isUploading ? "Uploading..." : "Submit Document"}
                         loading={isUploading}
-                        className="bg-gradient-to-r from-[#fccd4d] to-[#f8b500] hover:from-[#f8b500] hover:to-[#fccd4d] rounded-md w-fit"
+                        className="bg-gradient-to-r from-[#fccd4d] to-[#f8b500] hover:from-[#f8b500] hover:to-[#fccd4d] rounded-md md:w-fit w-full"
                         onClick={handleKycUpload}
                         isDisabled={isUploading}
                       />
@@ -382,7 +382,7 @@ const Kyc = () => {
                       variant="outline"
                       size="sm"
                       onClick={handleKycFileSelect}
-                      className="text-sm"
+                      className="text-sm w-full"
                     >
                       Replace Document
                     </Button>

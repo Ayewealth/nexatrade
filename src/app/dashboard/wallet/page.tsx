@@ -363,19 +363,19 @@ const Page = () => {
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="md:grid w-full md:grid-cols-3 flex flex-wrap h-full">
           <TabsTrigger value="all">All Assets</TabsTrigger>
           <TabsTrigger value="crypto">Cryptocurrency</TabsTrigger>
           <TabsTrigger value="fiat">Fiat Currency</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {/* USD Wallet */}
             {primaryUSDWallet && (
               <Card>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
+                  <div className="md:flex md:items-center md:justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                         <DollarSign className="h-6 w-6 text-green-600" />
@@ -419,7 +419,7 @@ const Page = () => {
               return (
                 <Card key={wallet.id}>
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
+                    <div className="md:flex md:items-center md:justify-between">
                       <div className="flex items-center gap-4">
                         <div
                           className={`w-12 h-12 ${colorScheme.bg} rounded-full flex items-center justify-center`}
@@ -480,7 +480,7 @@ const Page = () => {
         </TabsContent>
 
         <TabsContent value="crypto" className="space-y-4">
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 gap-4">
             {walletInfo.map((wallet, index) => {
               const walletWithPrice = getCryptoWalletWithPrice(wallet.id);
               const usdValue = walletWithPrice?.total_usd_value || 0;
@@ -497,7 +497,7 @@ const Page = () => {
               return (
                 <Card key={wallet.id}>
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="md:flex md:items-center md:justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div
                           className={`w-12 h-12 ${colorScheme.bg} rounded-full flex items-center justify-center`}
