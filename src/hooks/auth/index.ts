@@ -9,6 +9,10 @@ import { setTokens } from "@/utils/tokenUtils";
 import { useDispatch } from "react-redux";
 import { SignUpSchema } from "@/app/signup/schema";
 import {
+  adminDepositApprove,
+  adminKYCAction,
+  adminTradeAction,
+  adminWithdrawalAction,
   changePassword,
   closeTrade,
   convertCryptoToUSD,
@@ -27,6 +31,7 @@ import {
   updateProfile,
 } from "@/actions/auth";
 import {
+  setIsAdmin,
   setIsAuthenticated,
   setIsNewUser,
   setUserInfo,
@@ -85,7 +90,12 @@ export const useAuthSignUp = () => {
       dispatch(setIsAuthenticated(true));
       dispatch(setIsNewUser(true));
       dispatch(setUserInfo({ userData: data.user }));
-
+      if (data.user.is_staff) {
+        Cookies.set("isAdmin", "true", {
+          expires: 365 * 10,
+        });
+        dispatch(setIsAdmin(true));
+      }
       router.replace("/auth-callback");
     },
     onError: (error) => {
@@ -468,6 +478,93 @@ export function useSubscribe() {
     }) => subscribePackage({ package_id, investment_amount }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subscriptions"] });
+    },
+  });
+}
+
+export function useAdminDepositApprove() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      transaction,
+      note,
+      action,
+    }: {
+      transaction: number;
+      note: string;
+      action: "approve" | "reject";
+    }) => adminDepositApprove({ transaction, note, action }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+      queryClient.invalidateQueries({ queryKey: ["allKycs"] });
+      queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
+    },
+  });
+}
+
+export function useAdminWithdrawalAction() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      transaction,
+      note,
+      withdrawalTxHash,
+      action,
+    }: {
+      transaction: number;
+      note: string;
+      withdrawalTxHash: string;
+      action: "approve" | "reject";
+    }) =>
+      adminWithdrawalAction({ transaction, note, withdrawalTxHash, action }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+      queryClient.invalidateQueries({ queryKey: ["allKycs"] });
+      queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
+    },
+  });
+}
+
+export function useAdminKYCAction() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      user,
+      note,
+      action,
+    }: {
+      user: number;
+      note: string;
+      action: "approve" | "reject";
+    }) => adminKYCAction({ user, note, action }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+      queryClient.invalidateQueries({ queryKey: ["allKycs"] });
+      queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
+    },
+  });
+}
+
+export function useAdminTradeAction() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      trade,
+      manual_profit,
+      note,
+    }: {
+      trade: number;
+      manual_profit: string;
+      note: string;
+    }) => adminTradeAction({ trade, manual_profit, note }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["trades"] });
+      queryClient.invalidateQueries({ queryKey: ["allKycs"] });
+      queryClient.invalidateQueries({ queryKey: ["allAdminActions"] });
     },
   });
 }

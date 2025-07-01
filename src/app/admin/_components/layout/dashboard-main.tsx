@@ -15,7 +15,7 @@ const DashboardMain = ({ children }: { children: React.ReactNode }) => {
           }`}
         >
           <div className="flex-shrink-0">
-            <DashNav type="user" />
+            <DashNav type="admin" />
           </div>
           <main className="flex-1 overflow-y-auto overflow-x-hidden">
             {children}

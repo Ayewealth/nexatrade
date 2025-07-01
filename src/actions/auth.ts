@@ -15,6 +15,8 @@ import {
   Trade,
   Package,
   Subscription,
+  KYCS,
+  AdminActions,
 } from "@/utils/types";
 
 type RegisterResponse = RegisterSuccessResponse;
@@ -291,6 +293,106 @@ export const subscribePackage = async ({
     package: package_id,
     investment_amount,
   });
+
+  return data;
+};
+
+export const getAllKyc = async (): Promise<KYCS[]> => {
+  const { data } = await api.get("/auth/kyc/");
+
+  return data;
+};
+
+export const getAdminActions = async (): Promise<AdminActions[]> => {
+  const { data } = await api.get("/admin_panel/admin-actions/");
+
+  return data;
+};
+
+export interface adminDepositActionResponse {
+  message: string;
+}
+
+export const adminDepositApprove = async ({
+  transaction,
+  note,
+  action,
+}: {
+  transaction: number;
+  note: string;
+  action: "approve" | "reject";
+}): Promise<adminDepositActionResponse> => {
+  const { data } = await api.post(
+    `/admin_panel/admin-operations/${action}_deposit/`,
+    {
+      transaction: transaction,
+      notes: note,
+    }
+  );
+
+  return data;
+};
+
+export const adminWithdrawalAction = async ({
+  transaction,
+  note,
+  withdrawalTxHash,
+  action,
+}: {
+  transaction: number;
+  note: string;
+  withdrawalTxHash: string;
+  action: "approve" | "reject";
+}): Promise<adminDepositActionResponse> => {
+  const { data } = await api.post(
+    `/admin_panel/admin-operations/${action}_withdrawal/`,
+    {
+      transaction: transaction,
+      tx_hash: action === "approve" ? withdrawalTxHash : undefined,
+      notes: note,
+    }
+  );
+
+  return data;
+};
+
+export const adminKYCAction = async ({
+  user,
+  note,
+  action,
+}: {
+  user: number;
+  note: string;
+  action: "approve" | "reject";
+}): Promise<adminDepositActionResponse> => {
+  const { data } = await api.post(
+    `/admin_panel/admin-operations/${action}_kyc/`,
+    {
+      user: user,
+      notes: note,
+    }
+  );
+
+  return data;
+};
+
+export const adminTradeAction = async ({
+  trade,
+  manual_profit,
+  note,
+}: {
+  trade: number;
+  manual_profit: string;
+  note: string;
+}): Promise<adminDepositActionResponse> => {
+  const { data } = await api.post(
+    `/admin_panel/admin-operations/adjust_trade_profit/`,
+    {
+      trade: trade,
+      manual_profit: manual_profit,
+      notes: note,
+    }
+  );
 
   return data;
 };

@@ -5,8 +5,9 @@ import React from "react";
 import { useTheme } from "next-themes";
 import { FaMoon } from "react-icons/fa";
 import { IoSunnySharp } from "react-icons/io5";
+import Link from "next/link";
 
-const DashNav = () => {
+const DashNav = ({ type }: { type: "user" | "admin" }) => {
   const { setTheme, theme } = useTheme();
   return (
     <div className="flex items-center justify-end lg:justify-between p-[12px] w-full">
@@ -26,9 +27,13 @@ const DashNav = () => {
         />
       </div>
       <div className="flex items-center gap-2 gap-sm-3">
-        <Button className="lg:block hidden bg-[#fccd4d] hover:bg-[#f8b500] cursor-pointer rounded text-black">
-          Add Funds
-        </Button>
+        {type === "user" && (
+          <Link href="/dashboard/withdraw">
+            <Button className="lg:block hidden bg-[#fccd4d] hover:bg-[#f8b500] cursor-pointer rounded text-black">
+              Add Funds
+            </Button>
+          </Link>
+        )}
         <div className="relative">
           <IoNotifications className="h-5 w-5" />
           <div

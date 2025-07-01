@@ -1,9 +1,9 @@
 "use client";
 
-import { clearUserInfo, setIsAuthenticated } from "@/lib/redux/slice/authSlice";
-import { resetWalletState } from "@/lib/redux/slice/walletSlice";
+import { setIsAdmin, setIsAuthenticated } from "@/lib/redux/slice/authSlice";
 import { persistor, store } from "@/lib/redux/store";
 import { removeTokens } from "@/utils/tokenUtils";
+import Cookies from "js-cookie";
 
 export const handleLogout = () => {
   removeTokens();
@@ -15,9 +15,9 @@ export const handleLogout = () => {
   persistor.purge();
 
   // Dispatch Redux actions
-  store.dispatch(clearUserInfo());
   store.dispatch(setIsAuthenticated(false));
-  store.dispatch(resetWalletState());
+  store.dispatch(setIsAdmin(false));
+  Cookies.remove("isAdmin");
 
   console.log("User Logout");
 };

@@ -10,6 +10,7 @@ interface UserData {
   date_of_birth: string;
   kyc_status: string;
   profile_pic: string;
+  is_staff: boolean;
 }
 
 interface UserInfo {
@@ -20,6 +21,7 @@ export interface AuthState {
   userInfo: UserInfo;
   isAuthenticated: boolean;
   isNewUser: boolean;
+  isAdmin: boolean;
 }
 
 const initialState: AuthState = {
@@ -34,10 +36,12 @@ const initialState: AuthState = {
       date_of_birth: "",
       kyc_status: "",
       profile_pic: "",
+      is_staff: false,
     },
   },
   isAuthenticated: false,
   isNewUser: false,
+  isAdmin: false,
 };
 
 const authSlice = createSlice({
@@ -68,6 +72,9 @@ const authSlice = createSlice({
     setIsNewUser: (state, action: PayloadAction<boolean>) => {
       state.isNewUser = action.payload;
     },
+    setIsAdmin: (state, action: PayloadAction<boolean>) => {
+      state.isAdmin = action.payload;
+    },
   },
 });
 
@@ -77,6 +84,7 @@ export const {
   clearUserInfo,
   setIsAuthenticated,
   setIsNewUser,
+  setIsAdmin,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -86,4 +94,5 @@ export type AuthActions =
   | ReturnType<typeof updateUserInfo>
   | ReturnType<typeof clearUserInfo>
   | ReturnType<typeof setIsAuthenticated>
-  | ReturnType<typeof setIsNewUser>;
+  | ReturnType<typeof setIsNewUser>
+  | ReturnType<typeof setIsAdmin>;

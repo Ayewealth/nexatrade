@@ -10,7 +10,7 @@ import { PiHandWithdrawFill, PiHandDepositFill } from "react-icons/pi";
 import { FaChartLine, FaUserCog } from "react-icons/fa";
 import { MdCandlestickChart, MdWallet } from "react-icons/md";
 import { LuHistory } from "react-icons/lu";
-import { LifeBuoy } from "lucide-react";
+// import { LifeBuoy } from "lucide-react";
 
 // Define sidebar routes
 const routes = [
@@ -72,17 +72,17 @@ const routes = [
       },
     ],
   },
-  {
-    category: "System",
-    items: [
-      {
-        path: "/dashboard/help",
-        icon: <LifeBuoy size={20} />,
-        text: "Help & Support",
-        alert: false,
-      },
-    ],
-  },
+  // {
+  //   category: "System",
+  //   items: [
+  //     {
+  //       path: "/dashboard/help",
+  //       icon: <LifeBuoy size={20} />,
+  //       text: "Help & Support",
+  //       alert: false,
+  //     },
+  //   ],
+  // },
 ];
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [expanded, setExpanded] = useState(true);

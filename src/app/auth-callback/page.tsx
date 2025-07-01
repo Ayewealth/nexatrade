@@ -19,7 +19,9 @@ const AuthCallback = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { isAuthenticated, isNewUser } = useAppSelector((state) => state.auth);
+  const { userInfo, isAuthenticated, isNewUser, isAdmin } = useAppSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     setIsClient(true); // wait until the component is mounted on the client
@@ -53,6 +55,7 @@ const AuthCallback = () => {
             address: userProfile.address,
             date_of_birth: userProfile.date_of_birth,
             kyc_status: userProfile.kyc_status,
+            is_staff: userProfile.is_staff,
           },
         })
       );
@@ -60,7 +63,11 @@ const AuthCallback = () => {
         description: "Login Successfully",
       });
       if (isAuthenticated) {
-        router.replace(isNewUser ? "/dashboard/profile" : "/dashboard/home");
+        if (userProfile.is_staff || isAdmin) {
+          router.replace("/admin/home");
+        } else {
+          router.replace(isNewUser ? "/dashboard/profile" : "/dashboard/home");
+        }
       }
     } else {
       toast.error("Error", {
@@ -81,6 +88,8 @@ const AuthCallback = () => {
     router,
     isAuthenticated,
     isNewUser,
+    userInfo.userData.is_staff,
+    isAdmin,
   ]);
 
   if (!isClient) return null;

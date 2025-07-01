@@ -21,11 +21,12 @@ export interface UserProfileResponse {
   date_of_birth: string;
   kyc_status: string;
   profile_pic: string;
+  is_staff: boolean;
 }
 
 export interface Transaction {
   id: number;
-  user: number | null;
+  user: UserProfileResponse;
   transaction_type: "deposit" | "withdrawal" | null;
   crypto_wallet: string | null;
   usd_wallet: string | null;
@@ -110,6 +111,7 @@ export interface RegisterSuccessResponse {
     date_of_birth: string;
     kyc_status: string;
     profile_pic: string;
+    is_staff: boolean;
   };
 }
 
@@ -131,6 +133,7 @@ export interface UserProfilePictureResponse {
   address: string | null;
   kyc_status: string | null;
   profile_pic: string | null;
+  is_staff: boolean;
 }
 
 export interface KycResponse {
@@ -178,7 +181,7 @@ export interface Market {
 
 export interface Trade {
   id: number;
-  user: number;
+  user: UserProfileResponse;
   market: {
     id: number;
     name: string;
@@ -241,4 +244,24 @@ export interface Subscription {
   start_date: string;
   end_date: string;
   auto_trades: AutoTrade[];
+}
+
+export interface KYCS {
+  id: number;
+  user: UserProfileResponse;
+  document_type: string;
+  document: string;
+  uploaded_at: string;
+  status: string;
+}
+
+export interface AdminActions {
+  id: number;
+  admin_user: UserProfileResponse;
+  action_type: string;
+  transaction: number;
+  trade: null;
+  target_user: UserProfileResponse;
+  notes: string;
+  created_at: string;
 }

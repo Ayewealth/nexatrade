@@ -86,6 +86,7 @@ const Page = () => {
             address: data.address,
             date_of_birth: data.date_of_birth,
             kyc_status: data.kyc_status,
+            is_staff: data.is_staff,
           },
         })
       );

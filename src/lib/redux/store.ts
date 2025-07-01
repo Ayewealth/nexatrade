@@ -8,6 +8,7 @@ import transactionHistorySlice from "./slice/transactionSlice";
 import walletSlice from "./slice/walletSlice";
 import tradingSlice from "./slice/tradingSlice";
 import investmentSlice from "./slice/investmentSlice";
+import adminSlice from "./slice/adminSlice";
 import {
   FLUSH,
   REHYDRATE,
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   wallet: walletSlice,
   trading: tradingSlice,
   investment: investmentSlice,
+  admin: adminSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -40,7 +40,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
@@ -75,6 +74,9 @@ export default function ImageFunc() {
   const [selectedMarket, setSelectedMarket] = useState<
     (typeof markets)[0] | null
   >(null);
+  const [tradeDialogMarket, setTradeDialogMarket] = useState<
+    (typeof markets)[0] | null
+  >(null); // Separate state for dialog
   const [tradeType, setTradeType] = useState<"buy" | "sell">("buy");
   const [amount, setAmount] = useState("");
   const [leverage, setLeverage] = useState("1");
@@ -100,17 +102,17 @@ export default function ImageFunc() {
   const { mutateAsync: closeTrade, isPending: isLoading } = useCloseTrade();
 
   const calculateRequiredMargin = () => {
-    if (!selectedMarket || !amount) return 0;
+    if (!tradeDialogMarket || !amount) return 0;
     const tradeAmount = Number.parseFloat(amount);
-    const price = Number.parseFloat(selectedMarket.current_price);
+    const price = Number.parseFloat(tradeDialogMarket.current_price);
     const leverageNum = Number.parseInt(leverage);
     return (tradeAmount * price) / leverageNum;
   };
 
   const calculatePotentialProfit = () => {
-    if (!selectedMarket || !amount) return 0;
+    if (!tradeDialogMarket || !amount) return 0;
     const tradeAmount = Number.parseFloat(amount);
-    const price = Number.parseFloat(selectedMarket.current_price);
+    const price = Number.parseFloat(tradeDialogMarket.current_price);
     const leverageNum = Number.parseInt(leverage);
     // Assume 1% price movement for example
     const priceMovement = 0.01;
@@ -118,7 +120,7 @@ export default function ImageFunc() {
   };
 
   const handleTrade = async () => {
-    if (!selectedMarket) {
+    if (!tradeDialogMarket) {
       toast.error("Please select a market to trade");
       return;
     }
@@ -126,10 +128,10 @@ export default function ImageFunc() {
     if (
       !amount ||
       Number.parseFloat(amount) <
-        Number.parseFloat(selectedMarket.min_trade_amount)
+        Number.parseFloat(tradeDialogMarket.min_trade_amount)
     ) {
       toast.error(
-        `Minimum trade amount is ${selectedMarket.min_trade_amount} ${selectedMarket.base_currency.symbol}`
+        `Minimum trade amount is ${tradeDialogMarket.min_trade_amount} ${tradeDialogMarket.base_currency.symbol}`
       );
       return;
     }
@@ -142,7 +144,7 @@ export default function ImageFunc() {
 
     try {
       await placeTrade({
-        market: selectedMarket.id,
+        market: tradeDialogMarket.id,
         trade_type: tradeType,
         amount: amount,
         leverage: Number.parseInt(leverage),
@@ -152,7 +154,7 @@ export default function ImageFunc() {
 
       toast.success(
         `${tradeType.toUpperCase()} order for ${amount} ${
-          selectedMarket.base_currency.symbol
+          tradeDialogMarket.base_currency.symbol
         } has been placed.`
       );
 
@@ -161,6 +163,7 @@ export default function ImageFunc() {
       setTakeProfit("");
       setStopLoss("");
       setShowTradeDialog(false);
+      setTradeDialogMarket(null);
     } catch (error) {
       toast.error("Failed to connect to server. Please try again.");
       console.error("Trade placement error:", error);
@@ -175,6 +178,29 @@ export default function ImageFunc() {
     } catch (error) {
       toast.error("Failed to connect to server");
       console.error("Trade closure error:", error);
+    }
+  };
+
+  const handleRowClick = (market: any) => {
+    setSelectedMarket(market);
+  };
+
+  const handleTradeButtonClick = (e: React.MouseEvent, market: any) => {
+    e.stopPropagation(); // Prevent row click
+    setTradeDialogMarket(market);
+    setShowTradeDialog(true);
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    setShowTradeDialog(open);
+    if (!open) {
+      // Reset trade dialog state when closing
+      setTradeDialogMarket(null);
+      setAmount("");
+      setTakeProfit("");
+      setStopLoss("");
+      setTradeType("buy");
+      setLeverage("1");
     }
   };
 
@@ -244,7 +270,7 @@ export default function ImageFunc() {
                         className={`cursor-pointer hover:bg-muted/50 ${
                           selectedMarket?.id === market.id ? "bg-muted" : ""
                         }`}
-                        onClick={() => setSelectedMarket(market)}
+                        onClick={() => handleRowClick(market)}
                       >
                         <TableCell>
                           <div className="flex items-center gap-3">
@@ -278,194 +304,13 @@ export default function ImageFunc() {
                           </span>
                         </TableCell>
                         <TableCell>
-                          <Dialog
-                            open={showTradeDialog}
-                            onOpenChange={setShowTradeDialog}
+                          <Button
+                            size="sm"
+                            onClick={(e) => handleTradeButtonClick(e, market)}
+                            className="cursor-pointer"
                           >
-                            <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedMarket(market);
-                                  setShowTradeDialog(true);
-                                }}
-                                className="cursor-pointer"
-                              >
-                                Trade
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-md">
-                              <DialogHeader>
-                                <DialogTitle>Place Trade</DialogTitle>
-                                <DialogDescription>
-                                  {selectedMarket?.name} •{" "}
-                                  {formatCurrency(
-                                    selectedMarket?.current_price || "0"
-                                  )}
-                                </DialogDescription>
-                              </DialogHeader>
-
-                              <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-2">
-                                  <Button
-                                    variant={
-                                      tradeType === "buy"
-                                        ? "default"
-                                        : "outline"
-                                    }
-                                    onClick={() => setTradeType("buy")}
-                                    className="w-full cursor-pointer"
-                                  >
-                                    Buy
-                                  </Button>
-                                  <Button
-                                    variant={
-                                      tradeType === "sell"
-                                        ? "destructive"
-                                        : "outline"
-                                    }
-                                    onClick={() => setTradeType("sell")}
-                                    className="w-full cursor-pointer"
-                                  >
-                                    Sell
-                                  </Button>
-                                </div>
-
-                                <div className="space-y-2">
-                                  <Label htmlFor="amount">
-                                    Amount (
-                                    {selectedMarket?.base_currency.symbol})
-                                  </Label>
-                                  <Input
-                                    id="amount"
-                                    type="number"
-                                    placeholder="0.00000000"
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                    min={selectedMarket?.min_trade_amount}
-                                    step="0.00000001"
-                                  />
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    Min: {selectedMarket?.min_trade_amount}{" "}
-                                    {selectedMarket?.base_currency.symbol}
-                                  </p>
-                                </div>
-
-                                <div className="space-y-2">
-                                  <Label htmlFor="leverage">Leverage</Label>
-                                  <Select
-                                    value={leverage}
-                                    onValueChange={setLeverage}
-                                  >
-                                    <SelectTrigger className="w-full">
-                                      <SelectValue className="w-full" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="1">1x</SelectItem>
-                                      <SelectItem value="2">2x</SelectItem>
-                                      <SelectItem value="5">5x</SelectItem>
-                                      <SelectItem value="10">10x</SelectItem>
-                                      <SelectItem value="20">20x</SelectItem>
-                                      <SelectItem value="50">50x</SelectItem>
-                                      <SelectItem value="100">100x</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="take-profit">
-                                      Take Profit (Optional)
-                                    </Label>
-                                    <Input
-                                      id="take-profit"
-                                      type="number"
-                                      placeholder="0.00"
-                                      value={takeProfit}
-                                      onChange={(e) =>
-                                        setTakeProfit(e.target.value)
-                                      }
-                                      step="0.01"
-                                    />
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="stop-loss">
-                                      Stop Loss (Optional)
-                                    </Label>
-                                    <Input
-                                      id="stop-loss"
-                                      type="number"
-                                      placeholder="0.00"
-                                      value={stopLoss}
-                                      onChange={(e) =>
-                                        setStopLoss(e.target.value)
-                                      }
-                                      step="0.01"
-                                    />
-                                  </div>
-                                </div>
-
-                                {amount && selectedMarket && (
-                                  <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
-                                    <div className="flex justify-between">
-                                      <span>Required Margin:</span>
-                                      <span className="font-mono">
-                                        {formatCurrency(
-                                          calculateRequiredMargin()
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span>Potential Profit (1%):</span>
-                                      <span className="font-mono text-green-600">
-                                        +
-                                        {formatCurrency(
-                                          calculatePotentialProfit()
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                      <span>Available Balance:</span>
-                                      <span className="font-mono">
-                                        {formatCurrency(
-                                          primaryUSDWallet?.balance
-                                        )}
-                                      </span>
-                                    </div>
-                                  </div>
-                                )}
-
-                                <Alert>
-                                  <AlertTriangle className="h-4 w-4" />
-                                  <AlertDescription>
-                                    Trading with leverage involves significant
-                                    risk. You may lose more than your initial
-                                    investment.
-                                  </AlertDescription>
-                                </Alert>
-
-                                <Button
-                                  onClick={handleTrade}
-                                  disabled={
-                                    isPending || !amount || !selectedMarket
-                                  }
-                                  className="w-full"
-                                  variant={
-                                    tradeType === "buy"
-                                      ? "default"
-                                      : "destructive"
-                                  }
-                                >
-                                  {isPending
-                                    ? "Placing Trade..."
-                                    : `${tradeType.toUpperCase()} ${
-                                        selectedMarket?.base_currency.symbol
-                                      }`}
-                                </Button>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
+                            Trade
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -514,18 +359,24 @@ export default function ImageFunc() {
                 </div>
                 <div>
                   <p className="text-muted-foreground">Total P&L</p>
-                  <p className="font-bold text-lg text-green-600">
-                    +
-                    {formatCurrency(
-                      trades
-                        ?.filter((t) => t.status === "open")
-                        .reduce(
-                          (sum, trade) =>
-                            sum + Number.parseFloat(trade.current_profit),
-                          0
-                        )
-                    )}
-                  </p>
+                  {(() => {
+                    const totalProfit = trades
+                      ?.filter((t) => t.status === "open")
+                      .reduce(
+                        (sum, trade) =>
+                          sum + Number.parseFloat(trade.current_profit),
+                        0
+                      );
+
+                    const profitColor =
+                      totalProfit < 0 ? "text-red-600" : "text-green-600";
+
+                    return (
+                      <p className={`font-bold text-lg ${profitColor}`}>
+                        {formatCurrency(totalProfit)}
+                      </p>
+                    );
+                  })()}
                 </div>
                 <div>
                   <p className="text-muted-foreground">Win Rate</p>
@@ -705,6 +556,144 @@ export default function ImageFunc() {
           </Card>
         </div>
       </div>
+
+      {/* Trade Dialog - Moved outside the table */}
+      <Dialog open={showTradeDialog} onOpenChange={handleDialogClose}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Place Trade</DialogTitle>
+            <DialogDescription>
+              {tradeDialogMarket?.name} •{" "}
+              {formatCurrency(tradeDialogMarket?.current_price || "0")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant={tradeType === "buy" ? "default" : "outline"}
+                onClick={() => setTradeType("buy")}
+                className="w-full cursor-pointer"
+              >
+                Buy
+              </Button>
+              <Button
+                variant={tradeType === "sell" ? "destructive" : "outline"}
+                onClick={() => setTradeType("sell")}
+                className="w-full cursor-pointer"
+              >
+                Sell
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="amount">
+                Amount ({tradeDialogMarket?.base_currency.symbol})
+              </Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="0.00000000"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min={tradeDialogMarket?.min_trade_amount}
+                step="0.00000001"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Min: {tradeDialogMarket?.min_trade_amount}{" "}
+                {tradeDialogMarket?.base_currency.symbol}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="leverage">Leverage</Label>
+              <Select value={leverage} onValueChange={setLeverage}>
+                <SelectTrigger className="w-full">
+                  <SelectValue className="w-full" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1x</SelectItem>
+                  <SelectItem value="2">2x</SelectItem>
+                  <SelectItem value="5">5x</SelectItem>
+                  <SelectItem value="10">10x</SelectItem>
+                  <SelectItem value="20">20x</SelectItem>
+                  <SelectItem value="50">50x</SelectItem>
+                  <SelectItem value="100">100x</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="take-profit">Take Profit (Optional)</Label>
+                <Input
+                  id="take-profit"
+                  type="number"
+                  placeholder="0.00"
+                  value={takeProfit}
+                  onChange={(e) => setTakeProfit(e.target.value)}
+                  step="0.01"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="stop-loss">Stop Loss (Optional)</Label>
+                <Input
+                  id="stop-loss"
+                  type="number"
+                  placeholder="0.00"
+                  value={stopLoss}
+                  onChange={(e) => setStopLoss(e.target.value)}
+                  step="0.01"
+                />
+              </div>
+            </div>
+
+            {amount && tradeDialogMarket && (
+              <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Required Margin:</span>
+                  <span className="font-mono">
+                    {formatCurrency(calculateRequiredMargin())}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Potential Profit (1%):</span>
+                  <span className="font-mono text-green-600">
+                    +{formatCurrency(calculatePotentialProfit())}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Available Balance:</span>
+                  <span className="font-mono">
+                    {formatCurrency(primaryUSDWallet?.balance)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                Trading with leverage involves significant risk. You may lose
+                more than your initial investment.
+              </AlertDescription>
+            </Alert>
+
+            <Button
+              onClick={handleTrade}
+              disabled={isPending || !amount || !tradeDialogMarket}
+              className="w-full"
+              variant={tradeType === "buy" ? "default" : "destructive"}
+            >
+              {isPending
+                ? "Placing Trade..."
+                : `${tradeType.toUpperCase()} ${
+                    tradeDialogMarket?.base_currency.symbol
+                  }`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
