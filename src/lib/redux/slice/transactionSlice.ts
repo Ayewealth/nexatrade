@@ -14,7 +14,18 @@ const initialState: transactionHistoryState = {
     transactionHistoryData: [
       {
         id: 0,
-        user: null,
+        user: {
+          id: 0,
+          username: "",
+          full_name: "",
+          email: "",
+          phone_number: "",
+          address: "",
+          date_of_birth: "",
+          kyc_status: "",
+          profile_pic: "",
+          is_staff: false,
+        },
         transaction_type: null,
         crypto_wallet: null,
         usd_wallet: null,
