@@ -711,11 +711,11 @@ const Page = () => {
         </TabsContent>
 
         <TabsContent value="wallets" className="space-y-6">
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 gap-6">
             {/* USD Wallet */}
             <Card>
               <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+                <div className="md:flex md:items-center md:justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                       <DollarSign className="h-6 w-6 text-green-600" />
@@ -758,7 +758,7 @@ const Page = () => {
               return (
                 <Card key={wallet.id}>
                   <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="md:flex md:items-center md:justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div
                           className={`w-12 h-12 ${colorScheme.bg} rounded-full flex items-center justify-center`}
@@ -952,7 +952,7 @@ const Page = () => {
                   (transaction) => (
                     <div
                       key={transaction.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex items-center justify-between p-4 border rounded-lg md:flex-row flex-col gap-2 md:gap-0"
                     >
                       <div className="flex items-center gap-4">
                         <div
