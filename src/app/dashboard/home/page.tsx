@@ -61,17 +61,6 @@ import { setSubscriptions } from "@/lib/redux/slice/investmentSlice";
 import { getUserProfile } from "@/utils/queries";
 import { setUserInfo } from "@/lib/redux/slice/authSlice";
 
-// Mock data based on your models
-const mockUser = {
-  email: "johndoe@gmail.com",
-  first_name: "John",
-  last_name: "Doe",
-  uid: "35403204",
-  last_login: "2024-01-15T16:13:15Z",
-  avatar: "/placeholder.svg?height=120&width=120",
-  kyc_status: "verified",
-};
-
 const formatCurrency = (amount: string | number) => {
   const numAmount =
     typeof amount === "string" ? Number.parseFloat(amount) : amount;
