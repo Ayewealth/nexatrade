@@ -265,3 +265,46 @@ export interface AdminActions {
   notes: string;
   created_at: string;
 }
+
+export interface ChatMessage {
+  id: number;
+  conversation: number;
+  sender: UserProfilePictureResponse;
+  message: string;
+  is_admin: boolean;
+  is_read: boolean;
+  created_at: string;
+}
+
+export interface ChatConversation {
+  id: number;
+  user: UserProfilePictureResponse;
+  admin?: UserProfilePictureResponse;
+  subject: string;
+  status: "active" | "closed" | "pending";
+  created_at: string;
+  updated_at: string;
+  last_message_at: string;
+  unread_count_user: number;
+  unread_count_admin: number;
+  messages: ChatMessage[];
+  last_message?: ChatMessage;
+}
+
+export interface ChatConversationList {
+  id: number;
+  user: UserProfilePictureResponse;
+  admin?: UserProfilePictureResponse;
+  subject: string;
+  status: "active" | "closed" | "pending";
+  created_at: string;
+  last_message_at: string;
+  unread_count_user: number;
+  unread_count_admin: number;
+  last_message?: {
+    message: string;
+    sender: string;
+    is_admin: boolean;
+    created_at: string;
+  };
+}

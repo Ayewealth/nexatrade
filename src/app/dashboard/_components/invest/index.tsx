@@ -115,6 +115,7 @@ export default function Investment() {
   const [showInvestDialog, setShowInvestDialog] = useState(false);
 
   const { usdWallet } = useAppSelector((state) => state.wallet);
+  const { userInfo } = useAppSelector((state) => state.auth);
   const { packages, subscriptions } = useAppSelector(
     (state) => state.investment
   );
@@ -160,6 +161,12 @@ export default function Investment() {
 
     if (amount > Number.parseFloat(primaryUSDWallet?.balance)) {
       toast.error("You don't have enough USD balance for this investment");
+      return;
+    }
+
+    if (userInfo.userData.kyc_status !== "approved") {
+      toast.error("Please complete your KYC before investing");
+
       return;
     }
 

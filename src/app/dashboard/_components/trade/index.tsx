@@ -88,6 +88,7 @@ export default function ImageFunc() {
 
   const { theme } = useTheme();
   const { usdWallet } = useAppSelector((state) => state.wallet);
+  const { userInfo } = useAppSelector((state) => state.auth);
   const { markets, trades } = useAppSelector((state) => state.trading);
 
   const primaryUSDWallet = usdWallet[0] || null;
@@ -142,6 +143,12 @@ export default function ImageFunc() {
       return;
     }
 
+    if (userInfo.userData.kyc_status !== "approved") {
+      toast.error("Please complete your KYC before trading");
+
+      return;
+    }
+
     try {
       await placeTrade({
         market: tradeDialogMarket.id,
@@ -171,6 +178,12 @@ export default function ImageFunc() {
   };
 
   const handleCloseTrade = async (tradeId: number) => {
+    if (userInfo.userData.kyc_status !== "approved") {
+      toast.error("Please complete your KYC before trading");
+
+      return;
+    }
+
     try {
       closeTrade(tradeId);
 

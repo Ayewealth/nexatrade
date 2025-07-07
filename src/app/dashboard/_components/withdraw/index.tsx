@@ -32,6 +32,7 @@ export default function WithdrawalPage() {
   const [externalAddress, setExternalAddress] = useState("");
 
   const { walletInfo, usdWallet } = useAppSelector((state) => state.wallet);
+  const { userInfo } = useAppSelector((state) => state.auth);
   const { mutateAsync, isPending } = useCreateWithdrawalTransaction();
 
   const selectedCryptoWallet = walletInfo.find(
@@ -66,6 +67,12 @@ export default function WithdrawalPage() {
 
     if (!externalAddress) {
       toast.error("Please enter a valid destination address");
+      return;
+    }
+
+    if (userInfo.userData.kyc_status !== "approved") {
+      toast.error("Please complete your KYC before withdrawing funds");
+
       return;
     }
 

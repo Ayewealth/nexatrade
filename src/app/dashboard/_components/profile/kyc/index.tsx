@@ -382,7 +382,7 @@ const Kyc = () => {
                       variant="outline"
                       size="sm"
                       onClick={handleKycFileSelect}
-                      className="text-sm w-full"
+                      className="text-sm w-full md:w-fit"
                     >
                       Replace Document
                     </Button>

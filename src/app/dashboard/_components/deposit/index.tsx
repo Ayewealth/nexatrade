@@ -36,6 +36,7 @@ export default function DepositPage() {
   const [depositAmount, setDepositAmount] = useState("");
 
   const { walletInfo, usdWallet } = useAppSelector((state) => state.wallet);
+  const { userInfo } = useAppSelector((state) => state.auth);
   const { mutateAsync, isPending } = useCreateDepositTransaction();
 
   const copyToClipboard = (text: string) => {
@@ -60,6 +61,12 @@ export default function DepositPage() {
     const amount = Number.parseFloat(depositAmount);
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid deposit amount");
+      return;
+    }
+
+    if (userInfo.userData.kyc_status !== "approved") {
+      toast.error("Please complete your KYC before depositing funds");
+
       return;
     }
 

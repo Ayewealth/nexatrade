@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import DashboardMain from "./dashboard-main";
+import { LifeBuoy } from "lucide-react";
 // Define sidebar routes
 const routes = [
   {
@@ -16,6 +17,17 @@ const routes = [
         icon: <TbLayoutDashboardFilled size={20} />,
         text: "Dashboard",
         alert: true,
+      },
+    ],
+  },
+  {
+    category: "System",
+    items: [
+      {
+        path: "/admin/support",
+        icon: <LifeBuoy size={20} />,
+        text: "Help & Support",
+        alert: false,
       },
     ],
   },
