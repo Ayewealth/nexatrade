@@ -26,7 +26,7 @@ export async function middleware(req: NextRequest) {
     url.pathname.startsWith(route)
   );
 
-  // Handle protected routes and access checks
+  // Handle protected routes and access check
   if (isProtected) {
     if (!access) {
       return NextResponse.redirect(new URL("/signin", req.url));
