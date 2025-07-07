@@ -40,6 +40,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/media/**",
       },
+      {
+        protocol: "http",
+        hostname: "nexatradebackend-production.up.railway.app",
+        port: "",
+        pathname: "/media/**",
+      },
     ],
   },
 };
