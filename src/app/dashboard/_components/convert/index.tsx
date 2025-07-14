@@ -46,6 +46,11 @@ const Convert = ({ wallets, walletUSDValues, usdWallet }: Props) => {
     return walletUSDValues.find((wv) => wv.wallet_id === walletId);
   };
 
+  const getAvailableBalance = () => {
+    if (selectedWallet) return Number.parseFloat(selectedWallet.balance);
+    return 0;
+  };
+
   const calculateConversionRate = (wallet: any) => {
     if (!wallet) return 0;
 
@@ -196,13 +201,26 @@ const Convert = ({ wallets, walletUSDValues, usdWallet }: Props) => {
                 ? `(${selectedWallet?.crypto_type.symbol || "Crypto"})`
                 : "(USD)"}
             </Label>
-            <Input
-              type="number"
-              placeholder="0.00000000"
-              value={conversionAmount}
-              onChange={(e) => setConversionAmount(e.target.value)}
-              step="0.00000001"
-            />
+            <div className="relative">
+              <Input
+                type="number"
+                placeholder="0.00000000"
+                value={conversionAmount}
+                onChange={(e) => setConversionAmount(e.target.value)}
+                step="0.00000001"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-6 px-2 text-xs"
+                onClick={() =>
+                  setConversionAmount(getAvailableBalance().toString())
+                }
+              >
+                Max
+              </Button>
+            </div>
             {selectedWallet && (
               <p className="text-xs text-muted-foreground mt-1">
                 Available:{" "}
